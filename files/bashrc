@@ -1,0 +1,50 @@
+# Copyright (C) 2026 SUSE LLC
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+export LS_OPTS='--color=auto'
+alias ls='ls ${LS_OPTS}'
+PS1='\[\033[01;31m\]\u\[\033[01;31m\]@BEDROCK\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;36m\]$\[\033[00m\] '
+
+export PATH="$HOME/.local/bin:$PATH"
+
+echo "Welcome!
+
+This container is used to make life easier for bedrock users
+"
+
+if [ "$(ls -A ~/.aws)" ]; then
+  echo "Seems you already configured everything required by bedrock in the past
+
+The guide for bedrock is at https://github.com/SUSE/bedrock-toolkit/blob/main/user-guide.md"
+else 
+  echo "Seems you still need to configure bedrock and claude.
+
+Do it now by following https://github.com/SUSE/bedrock-toolkit/blob/main/user-guide.md
+
+IMPORTANT NOTES ABOUT THE DOCUMENTATION!
+
+1. BEFORE YOU START SECTION: No need to install bedrock, this container
+   already has it
+2. SETUP, STEP 1: To call 'bedrock configure sso' you need the
+   start-url and sso-region provided by SUSE at the internal repository
+   so do not use https://example.awsapps.com/start or us-east-1!
+"
+fi
+
+echo -e "\033[1m
+IMPORTANT! Remember Git commits and pushing must be done outside the container\033[0m"

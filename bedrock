@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# bedrock - Wrapper to run ghcr.io/multi-linux-manager/bedrock-container:latest
+# Copyright (C) 2026 SUSE LLC
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+IMAGE="ghcr.io/multi-linux-manager/bedrock-container:latest"
+
+if ! command -v podman >/dev/null 2>&1; then
+  echo "ERROR: Can't find the podman comand (most likely it is not installed)"
+fi
+
+DIRECTORY="${PWD}"
+
+usage() {
+  echo "Usage: $(basename "$0") [-d <path>] [-h]"
+  echo "  -d <path>         Path to the directory that will be availble as" 
+  echo "                    /home/bedrock/code inside the container"
+  echo "                    (default: current directory)"
+  echo "  -h                Show this help"
+}
+
+while getopts ":d:h" opt; do
+  case ${opt} in
+    d) DIRECTORY="${OPTARG}" ;;
+    h) usage; exit 0 ;;
+    :) echo "ERROR: Option -${OPTARG} requires an argument"; usage; exit 1 ;;
+    \?) echo "ERROR: Invalid option -${OPTARG}"; usage; exit 1 ;;
+  esac
+done
+
+if [ ! -d "${DIRECTORY}" ]; then
+  echo "ERROR: ${DIRECTORY} is not a directory"
+  exit 1
+fi
+DIRECTORY=$(cd -P "${DIRECTORY}" &> /dev/null && pwd)
+
+podman pull ${IMAGE}
+podman run --userns=keep-id -ti --rm -v bedrock-aws:/home/bedrock/.aws -v bedrock-clause:/home/bedrock/.claude -v "${DIRECTORY}/":/home/bedrock/code:Z ${IMAGE}
