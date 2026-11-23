@@ -10,7 +10,7 @@ podman run \
        -ti --rm \
        -v bedrock-aws:/home/bedrock/.aws \
        -v bedrock-claude:/home/bedrock/.claude \
-       -v <PATH_TO_DIR_WITH_YAML>:/home/bedrock/bedrock-configs:Z \
+       -v <PATH_TO_DIR_WITH_CODE>:/home/bedrock/code:Z \
         ${IMAGE}
 ```
 
